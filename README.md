@@ -1,104 +1,130 @@
-# Customer Churn Prediction using Decision Tree
+# Customer Churn Prediction
 
-A machine learning project that predicts whether a customer is likely to churn using a **Decision Tree Classifier**.
+A machine learning project focused on predicting customer churn using an optimized Random Forest classifier.
 
-The project includes data preprocessing, categorical feature encoding, model training, evaluation, visualization, feature importance analysis, and model tuning.
+The project follows an end-to-end machine learning workflow, including data exploration, preprocessing, model development, hyperparameter tuning, evaluation, and model persistence.
+
+---
 
 ## Project Overview
 
-Customer churn prediction is a classification problem where the goal is to identify customers who are likely to leave a service.
+Customer churn is a major challenge for businesses that rely on customer retention.
 
-In this project, a Decision Tree model is trained to predict the `Churn` status based on customer information such as age, tenure, monthly charges, support calls, contract type, internet service, and payment method.
+The objective of this project is to develop a machine learning model that predicts whether a customer is likely to leave a service based on demographic information, subscription details, payment methods, and customer behavior.
+
+This project uses a Random Forest classifier to identify potential churn patterns and evaluate predictive performance.
 
 ## Dataset
 
-The dataset contains **500 customer records** with the following features:
+The dataset contains 500 customer records and 8 features.
 
-| Feature           | Description                                             |
-| ----------------- | ------------------------------------------------------- |
-| `Age`             | Customer age                                            |
-| `Tenure`          | Length of time the customer has been with the service   |
-| `MonthlyCharges`  | Customer's monthly charges                              |
-| `SupportCalls`    | Number of customer support calls                        |
-| `ContractType`    | Type of customer contract                               |
-| `InternetService` | Customer's internet service type                        |
-| `PaymentMethod`   | Customer's payment method                               |
-| `Churn`           | Target variable indicating whether the customer churned |
+| Feature | Description | Type |
+|---|---|---|
+| Age | Customer age | Numerical |
+| Tenure | Duration of customer relationship | Numerical |
+| MonthlyCharges | Monthly service charges | Numerical |
+| SupportCalls | Number of customer support calls | Numerical |
+| ContractType | Customer contract type | Categorical |
+| InternetService | Type of internet service | Categorical |
+| PaymentMethod | Customer payment method | Categorical |
+| Churn | Customer churn status | Target |
 
-The target variable is encoded as:
+### Target Distribution
 
-* `0` → No Churn
-* `1` → Churn
+- Yes: 407 customers (81.4%)
+- No: 93 customers (18.6%)
+
+The dataset contains missing values in `InternetService`, which are handled during preprocessing.
 
 ## Technologies & Libraries
 
-* Python
-* Pandas
-* NumPy
-* Matplotlib
-* Scikit-learn
-* Jupyter Notebook
+- Python
+- NumPy
+- Pandas
+- Matplotlib
+- Scikit-learn
+- SciPy
+- Joblib
 
-## Project Workflow
+## Machine Learning Workflow
 
-The project follows these main steps:
+The project follows these steps:
 
-1. Load the dataset
-2. Data Cleaning
-3. Inspect Data
-4. Handle missing values
-5. Encode categorical features
-6. Separate features and target
-7. Split the dataset into training and testing sets
-8. Train a Decision Tree Classifier
-9. Evaluate the model
-10. Visualize the results
-11. Analyze feature importance
-12. Tune model parameters
+1. **Exploratory Data Analysis (EDA)**
+   - Dataset inspection
+   - Missing value analysis
+   - Feature distribution visualization
+   - Target variable analysis
 
-## Model
+2. **Data Preprocessing**
+   - Median imputation for numerical features
+   - Most frequent imputation for categorical features
+   - One-Hot Encoding
+   - ColumnTransformer and Pipeline
 
-The main machine learning algorithm used in this project is:
+3. **Train-Test Split**
+   - 80% Training Data
+   - 20% Testing Data
+   - Stratified sampling
 
-**Decision Tree Classifier**
+4. **Model Development**
+   - Random Forest Classifier
+   - Baseline model evaluation
+   - Stratified K-Fold Cross Validation
 
-Decision Trees are supervised learning algorithms that can be used for classification and regression tasks. The model makes predictions by creating a sequence of decision rules based on the input features.
+5. **Handling Class Imbalance**
+   - Class weight experiments
+   - Macro F1-score comparison
 
-## Model Evaluation
+6. **Hyperparameter Tuning**
+   - RandomizedSearchCV
+   - Optimization using Macro F1-score
 
-The Decision Tree model achieved an accuracy of 83% on the test set.
+7. **Model Evaluation**
+   - Accuracy
+   - Precision
+   - Recall
+   - F1-score
+   - Confusion Matrix
 
-Accuracy: 0.83
+8. **Model Persistence**
+   - Saving and loading the trained pipeline using Joblib
 
-The model was also evaluated using:
-* Accuracy
-* Decision Tree
-* Confusion Matrix
+## Model Performance
 
-These metrics help evaluate how well the model identifies customers who are likely to churn.
+The final Random Forest model achieved the following results on the test dataset:
 
-## Visualizations
+| Metric | Score |
+|---|---:|
+| Accuracy | 86% |
+| Macro F1-score | 0.76 |
+| Weighted F1-score | 0.86 |
 
-The project includes several visualizations, including:
+### Classification Report
 
-* Confusion Matrix
-* Decision Tree visualization
+| Class | Precision | Recall | F1-score |
+|---|---:|---:|---:|
+| No | 0.65 | 0.58 | 0.61 |
+| Yes | 0.90 | 0.93 | 0.91 |
 
-## Project Structure
+The model demonstrates strong performance in identifying customers likely to churn, achieving a recall of 93% for the `Yes` class.
 
-```text
-customer-churn-decision-tree/
-│
-├── data/
-│   └── customer_churn.csv
-│
-├── notebooks/
-│   └── customer_churn.ipynb
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
-```
+However, identifying customers who do not churn remains more challenging.
+
+## Feature Importance
+
+The Random Forest model identified the following features as the most influential:
+
+| Feature | Importance |
+|---|---:|
+| MonthlyCharges | 44.30% |
+| SupportCalls | 22.99% |
+| Tenure | 13.49% |
+| Age | 8.07% |
+
+MonthlyCharges and SupportCalls were the most influential features in the model's predictions.
+
+*Note: Feature importance represents the model's internal predictive importance estimates and does not establish causal relationships.*
 
 ## Installation
 
@@ -114,44 +140,102 @@ Navigate to the project directory:
 cd customer-churn-decision-tree
 ```
 
-Install the required libraries:
+Create a virtual environment:
 
 ```bash
-pip install -r requirements.txt
+python -m venv .venv
 ```
 
-## Running the Project
+Activate the environment:
 
-Open the Jupyter Notebook:
+**Linux / macOS:**
+
+```bash
+source .venv/bin/activate
+```
+
+**Windows:**
+
+```bash
+.venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install numpy pandas matplotlib scikit-learn scipy joblib jupyter
+```
+
+## Usage
+
+Start Jupyter Notebook:
 
 ```bash
 jupyter notebook
 ```
 
-Then open:
+Open the project notebook and run the cells sequentially.
 
-```text
-notebooks/customer_churn.ipynb
+The trained model can also be loaded using Joblib:
+
+```python
+import joblib
+
+model = joblib.load("customer_churn_model.pkl")
+
+predictions = model.predict(new_customer_data)
 ```
 
-Run the notebook cells to reproduce the preprocessing, training, evaluation, and visualization steps.
+`new_customer_data` must contain the same input features used during training.
 
-## Key Learning Outcomes
+## Project Structure
 
-Through this project, I practiced:
+```text
+customer-churn-decision-tree/
+│
+├── data/
+│   └── customer_churn.csv
+│
+├── notebooks/
+│   └── customer_churn_analysis.ipynb
+│
+├── models/
+│   └── customer_churn_model.pkl
+│
+├── README.md
+├── requirements.txt
+└── .gitignore
+```
 
-* Classification with Decision Trees
-* Data preprocessing
-* Handling categorical variables
-* Train/Test splitting
-* Model evaluation
-* Confusion Matrix analysis
-* Feature importance
-* Data visualization
-* Basic hyperparameter tuning
+*The directory structure may vary depending on the repository organization.*
+
+## Limitations
+
+- The dataset contains only 500 records.
+- The target variable is imbalanced.
+- Performance may vary on larger and more diverse datasets.
+- Feature importance does not imply causation.
+- Further validation is needed before using the model in a real business environment.
+
+## Future Improvements
+
+Potential future developments include:
+
+- Testing additional machine learning algorithms.
+- Advanced feature engineering.
+- Model explainability using SHAP.
+- Model deployment using FastAPI.
+- Building a web-based prediction interface.
+- Evaluating performance on larger datasets.
 
 ## Author
 
 **Mobin Madadi**
 
+Aspiring Machine Learning Engineer interested in Artificial Intelligence, Machine Learning, and Generative AI.
+
 GitHub: [Mobin-Madadi](https://github.com/Mobin-Madadi)
+
+---
+
+*This project was developed as part of my practical machine learning learning journey.*
