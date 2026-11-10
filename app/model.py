@@ -29,7 +29,7 @@ def predict_churn(customer_data: dict):
     probabilities = model.predict_proba(customer_df)[0]
 
     # Map class Labels to probabilities
-    probability_map = dict(zip(model.class_ , probabilities))
+    probability_map = dict(zip(model.classes_ , probabilities))
 
     return {
         'prediction': str(prediction),
