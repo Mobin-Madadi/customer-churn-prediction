@@ -1,98 +1,88 @@
 # Customer Churn Prediction
 
-A machine learning project focused on predicting customer churn using an optimized Random Forest classifier.
-
-The project follows an end-to-end machine learning workflow, including data exploration, preprocessing, model development, hyperparameter tuning, evaluation, and model persistence.
-
----
+An end-to-end Machine Learning project that predicts customer churn using a Scikit-learn classification pipeline, exposed through a REST API built with FastAPI.
 
 ## Project Overview
 
-Customer churn is a major challenge for businesses that rely on customer retention.
+Customer churn refers to customers discontinuing their relationship with a company or service.
 
-The objective of this project is to develop a machine learning model that predicts whether a customer is likely to leave a service based on demographic information, subscription details, payment methods, and customer behavior.
+The goal of this project is to develop a classification model that identifies customers who are more likely to leave, based on their demographic information, service usage, and subscription details.
 
-This project uses a Random Forest classifier to identify potential churn patterns and evaluate predictive performance.
+The trained model is deployed through a FastAPI application, allowing users to submit customer information and receive churn predictions with probability estimates.
+
+## Key Features
+
+- Exploratory Data Analysis (EDA)
+- Data cleaning and missing-value handling
+- Categorical feature encoding
+- Random Forest classification
+- Cross-validation and hyperparameter tuning
+- Model evaluation and feature importance analysis
+- Model persistence using Joblib
+- REST API development with FastAPI
+- Input validation using Pydantic
+- Automated API testing with Pytest
+
+## Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| Python | Main programming language |
+| Pandas | Data manipulation |
+| NumPy | Numerical operations |
+| Matplotlib | Data visualization |
+| Scikit-learn | Machine Learning |
+| Joblib | Model persistence |
+| FastAPI | REST API |
+| Pydantic | Input validation |
+| Uvicorn | ASGI server |
+| Pytest | Automated testing |
 
 ## Dataset
 
-The dataset contains 500 customer records and 8 features.
+The dataset contains 500 customer records and 8 columns.
 
-| Feature | Description | Type |
-|---|---|---|
-| Age | Customer age | Numerical |
-| Tenure | Duration of customer relationship | Numerical |
-| MonthlyCharges | Monthly service charges | Numerical |
-| SupportCalls | Number of customer support calls | Numerical |
-| ContractType | Customer contract type | Categorical |
-| InternetService | Type of internet service | Categorical |
-| PaymentMethod | Customer payment method | Categorical |
-| Churn | Customer churn status | Target |
+### Features
 
-### Target Distribution
+| Feature | Description |
+|---|---|
+| Age | Customer age |
+| Tenure | Duration of customer relationship |
+| MonthlyCharges | Monthly service charges |
+| SupportCalls | Number of customer support calls |
+| ContractType | Customer contract type |
+| InternetService | Internet service type |
+| PaymentMethod | Customer payment method |
+| Churn | Target variable |
 
-- Yes: 407 customers (81.4%)
-- No: 93 customers (18.6%)
+The target variable has two classes:
 
-The dataset contains missing values in `InternetService`, which are handled during preprocessing.
+- `Yes`: Customer churned.
+- `No`: Customer retained.
 
-## Technologies & Libraries
-
-- Python
-- NumPy
-- Pandas
-- Matplotlib
-- Scikit-learn
-- SciPy
-- Joblib
+Missing values in categorical features are handled through preprocessing.
 
 ## Machine Learning Workflow
 
-The project follows these steps:
+1. Data loading and exploration
+2. Exploratory Data Analysis
+3. Missing-value handling
+4. Numerical feature imputation
+5. Categorical feature imputation and One-Hot Encoding
+6. Train-test split
+7. Random Forest model development
+8. Cross-validation
+9. Class imbalance handling
+10. Hyperparameter tuning
+11. Model evaluation
+12. Feature importance analysis
+13. Model serialization using Joblib
 
-1. **Exploratory Data Analysis (EDA)**
-   - Dataset inspection
-   - Missing value analysis
-   - Feature distribution visualization
-   - Target variable analysis
-
-2. **Data Preprocessing**
-   - Median imputation for numerical features
-   - Most frequent imputation for categorical features
-   - One-Hot Encoding
-   - ColumnTransformer and Pipeline
-
-3. **Train-Test Split**
-   - 80% Training Data
-   - 20% Testing Data
-   - Stratified sampling
-
-4. **Model Development**
-   - Random Forest Classifier
-   - Baseline model evaluation
-   - Stratified K-Fold Cross Validation
-
-5. **Handling Class Imbalance**
-   - Class weight experiments
-   - Macro F1-score comparison
-
-6. **Hyperparameter Tuning**
-   - RandomizedSearchCV
-   - Optimization using Macro F1-score
-
-7. **Model Evaluation**
-   - Accuracy
-   - Precision
-   - Recall
-   - F1-score
-   - Confusion Matrix
-
-8. **Model Persistence**
-   - Saving and loading the trained pipeline using Joblib
+The preprocessing and classification steps are combined into a Scikit-learn Pipeline to ensure consistent transformations during training and inference.
 
 ## Model Performance
 
-The final Random Forest model achieved the following results on the test dataset:
+The final model achieved the following results on the test set:
 
 | Metric | Score |
 |---|---:|
@@ -107,135 +97,165 @@ The final Random Forest model achieved the following results on the test dataset
 | No | 0.65 | 0.58 | 0.61 |
 | Yes | 0.90 | 0.93 | 0.91 |
 
-The model demonstrates strong performance in identifying customers likely to churn, achieving a recall of 93% for the `Yes` class.
+These results indicate that the model performs better at identifying customers who churn than customers who stay.
 
-However, identifying customers who do not churn remains more challenging.
+### Model Visualizations
 
-## Feature Importance
+#### Confusion Matrix
 
-The Random Forest model identified the following features as the most influential:
+![Confusion Matrix](images/confusion_matrix.png)
 
-| Feature | Importance |
-|---|---:|
-| MonthlyCharges | 44.30% |
-| SupportCalls | 22.99% |
-| Tenure | 13.49% |
-| Age | 8.07% |
+#### Feature Importance
 
-MonthlyCharges and SupportCalls were the most influential features in the model's predictions.
+![Feature Importance](images/feature_importance.png)
 
-*Note: Feature importance represents the model's internal predictive importance estimates and does not establish causal relationships.*
+## REST API
 
-## Installation
+The trained model is accessible through a REST API developed with FastAPI.
 
-Clone the repository:
+### Available Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | API information |
+| GET | `/health` | Health check |
+| POST | `/predict` | Customer churn prediction |
+
+### Example Request
+
+`POST /predict`
+
+```json
+{
+  "Age": 35,
+  "Tenure": 12,
+  "MonthlyCharges": 85.5,
+  "SupportCalls": 4,
+  "ContractType": "Monthly",
+  "InternetService": "Fiber",
+  "PaymentMethod": "Electronic Check"
+}
+```
+
+### Example Response
+
+```json
+{
+  "prediction": "Yes",
+  "churn_probability": 0.9046,
+  "retention_probability": 0.0954
+}
+```
+
+The response probabilities are model estimates and should not be interpreted as guaranteed real-world outcomes.
+
+### Interactive API Documentation
+
+FastAPI automatically generates interactive API documentation.
+
+Once the application is running, visit:
+
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- ReDoc: `http://127.0.0.1:8000/redoc`
+
+## Installation & Setup
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Mobin-Madadi/customer-churn-decision-tree.git
-```
-
-Navigate to the project directory:
-
-```bash
 cd customer-churn-decision-tree
 ```
 
-Create a virtual environment:
+### 2. Create a Virtual Environment
 
 ```bash
 python -m venv .venv
 ```
 
-Activate the environment:
-
-**Linux / macOS:**
+Activate it on Linux:
 
 ```bash
 source .venv/bin/activate
 ```
 
-**Windows:**
+### 3. Install Dependencies
 
 ```bash
-.venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-Install dependencies:
+### 4. Run the API
 
 ```bash
-pip install numpy pandas matplotlib scikit-learn scipy joblib jupyter
+uvicorn app.main:app --reload
 ```
 
-## Usage
+The API will be available at:
 
-Start Jupyter Notebook:
+`http://127.0.0.1:8000`
+
+## Running Tests
+
+Run the automated test suite:
 
 ```bash
-jupyter notebook
+PYTHONPATH=. python -m pytest -v
 ```
 
-Open the project notebook and run the cells sequentially.
+The tests cover:
 
-The trained model can also be loaded using Joblib:
-
-```python
-import joblib
-
-model = joblib.load("customer_churn_model.pkl")
-
-predictions = model.predict(new_customer_data)
-```
-
-`new_customer_data` must contain the same input features used during training.
+- Home endpoint
+- Health endpoint
+- Prediction endpoint
+- Invalid input validation
 
 ## Project Structure
 
 ```text
 customer-churn-decision-tree/
 │
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── model.py
+│   └── schemas.py
+│
 ├── data/
 │   └── customer_churn.csv
 │
-├── notebooks/
-│   └── customer_churn_analysis.ipynb
-│
-├── models/
+├── model/
 │   └── customer_churn_model.pkl
+│
+├── notebooks/
+│   ├── customer_churn.csv
+│   └── customer_churn.ipynb
+│
+├── tests/
+│   └── test_api.py
 │
 ├── README.md
 ├── requirements.txt
 └── .gitignore
 ```
 
-*The directory structure may vary depending on the repository organization.*
+## Limitations & Future Improvements
 
-## Limitations
+Potential improvements include:
 
-- The dataset contains only 500 records.
-- The target variable is imbalanced.
-- Performance may vary on larger and more diverse datasets.
-- Feature importance does not imply causation.
-- Further validation is needed before using the model in a real business environment.
-
-## Future Improvements
-
-Potential future developments include:
-
-- Testing additional machine learning algorithms.
-- Advanced feature engineering.
-- Model explainability using SHAP.
-- Model deployment using FastAPI.
-- Building a web-based prediction interface.
-- Evaluating performance on larger datasets.
+- Probability calibration
+- More extensive model comparison
+- Additional customer behavior features
+- Improved class imbalance handling
+- Docker containerization
+- Cloud deployment
+- CI/CD integration
+- Monitoring model performance over time
 
 ## Author
 
 **Mobin Madadi**
 
-Aspiring Machine Learning Engineer interested in Artificial Intelligence, Machine Learning, and Generative AI.
-
 GitHub: [Mobin-Madadi](https://github.com/Mobin-Madadi)
 
----
-
-*This project was developed as part of my practical machine learning learning journey.*
+This project was developed as part of my practical learning journey in Machine Learning and AI Engineering.
